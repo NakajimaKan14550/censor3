@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>イメージセンサーの物理的限界とデータ転送理論 | クロニクス株式会社</title>
+    <title>CMOSイメージセンサーの転送理論と熱力学的限界 | クロニクス株式会社</title>
     <style>
         :root {
             --main-color: #091a2d;
@@ -61,13 +61,13 @@
 
         .hero-logo {
             height: 60px;
-            margin-bottom: 10px;
         }
 
         .hero h1 {
-            font-size: 2.5rem;
+            font-size: 2.2rem;
             letter-spacing: 0.05em;
             font-weight: 700;
+            line-height: 1.4;
         }
 
         /* Main Content */
@@ -110,10 +110,6 @@
             color: var(--main-color);
         }
 
-        p {
-            margin-bottom: 20px;
-        }
-
         /* Grid Layout */
         .grid {
             display: grid;
@@ -129,28 +125,44 @@
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
 
-        /* Image Zoom Styling */
+        /* Image Display & Zoom */
+        .img-container {
+            text-align: center;
+            margin: 40px 0;
+            background: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
         img {
             max-width: 100%;
             height: auto;
             cursor: zoom-in;
-            transition: all 0.3s ease;
+            transition: transform 0.3s ease;
             border-radius: 4px;
         }
 
-        .img-container {
-            text-align: center;
-            margin: 30px 0;
+        .img-caption {
+            display: block;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            color: #64748b;
+            font-weight: bold;
         }
 
+        /* Zoom Implementation */
         .zoomed {
             position: fixed;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%) scale(1.5);
+            transform: translate(-50%, -50%) scale(1.2);
             z-index: 2000;
             cursor: zoom-out;
-            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+            max-width: 90vw;
+            max-height: 90vh;
+            object-fit: contain;
+            box-shadow: 0 0 100px rgba(0,0,0,0.5);
         }
 
         .overlay {
@@ -159,39 +171,37 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.7);
+            background: rgba(9, 26, 45, 0.9);
             z-index: 1500;
             display: none;
         }
 
-        /* Formula Box */
         .formula {
             background: #f1f5f9;
             padding: 20px;
             border-left: 4px solid var(--main-color);
             margin: 20px 0;
-            font-family: "Courier New", Courier, monospace;
-            overflow-x: auto;
+            font-size: 1.1rem;
         }
 
-        /* Info Tags */
         .tag {
             display: inline-block;
             background: var(--accent-color);
             color: #fff;
-            padding: 2px 10px;
+            padding: 2px 12px;
             font-size: 0.8rem;
             border-radius: 4px;
             margin-bottom: 10px;
+            font-weight: bold;
         }
 
         @media (max-width: 768px) {
-            .hero h1 { font-size: 1.8rem; }
+            .hero h1 { font-size: 1.5rem; }
             .grid { grid-template-columns: 1fr; }
+            .zoomed { transform: translate(-50%, -50%) scale(1.0); width: 95vw; }
         }
     </style>
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
 
@@ -204,65 +214,63 @@
 <header class="hero">
     <div class="hero-content">
         <img src="logo.png" alt="Chronix Logo" class="hero-logo" onerror="this.style.display='none'">
-        <h1>イメージセンサーにおけるデータ転送理論と<br>物理的限界の解析</h1>
+        <h1>次世代CMOSイメージセンサーにおける<br>データ生成理論と物理的制約の解析</h1>
     </div>
 </header>
 
 <div class="container">
     
     <section>
-        <div class="tag">背景・課題</div>
-        <h2>データ生成の物理的メカニズムとボトルネック</h2>
-        <p>CMOSイメージセンサーにおけるデータ転送量（ビットレート）は、光学的情報をデジタル信号へ変換・出力するプロセスの総和によって決定される。現代の高速・高精細な要求に対し、主要な物理的課題として「情報密度」と「帯域幅」のトレードオフが存在する。</p>
-        
-        <div class="grid">
-            <div class="card">
-                <h3>物理スペックによる規定</h3>
-                <p>1フレームあたりのデータ量は、画素数（空間解像度）とビット深度（階調解像度）の積に依存する。センサーサイズそのものは、受光面積を規定し、S/N比（信号対雑音比）に直接関与する物理的基盤となる。</p>
-            </div>
-            <div class="card">
-                <h3>読み出し速度の定義</h3>
-                <p>時間軸におけるデータ生成ポテンシャルは、以下の等式によって定義される。これは回路の転送スピードにおける理論的な限界値を示すものである。</p>
-                <div class="formula">
-                    $$\text{ビットレート} = \text{画素数} \times \text{ビット深度} \times \text{フレームレート（fps）}$$
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section>
-        <div class="tag">技術原理</div>
-        <h2>信号処理プロセスと構造的アプローチ</h2>
-        <p>生成されたRAWデータが最終的な記録ビットレートとして出力されるまでには、複数の変換工程と帯域制御が行われる。特に「積層型CMOS構造」は、物理的な転送経路を短縮することで、これまでの帯域限界を突破するソリューションとなっている。</p>
+        <div class="tag">背景・技術原理</div>
+        <h2>イメージセンサーのアーキテクチャとデータポテンシャル</h2>
+        <p>CMOSセンサーにおけるデータ生成量は、物理的な画素構造と読み出し回路の並列処理能力に依存する。特に積層型BSI（裏面照射型）構造は、受光部とロジック回路を分離・積層することで、最短距離での高速信号伝送を可能にしている。</p>
         
         <div class="img-container">
-            <p style="font-size: 0.9rem; color: #64748b;">図1：積層型イメージセンサーの内部構造概念図</p>
-            <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=1200" alt="Technology Concept" id="zoom-img-1">
+            <img src="cen.png" alt="CMOSセンサーのデータ転送フロー" class="zoom-target">
+            <span class="img-caption">図1：センサーアーキテクチャとRAWデータ生成のプロセスフロー</span>
         </div>
-
-        <h3>帯域を決定する3つの要素</h3>
-        <ol style="margin-left: 20px; margin-bottom: 20px;">
-            <li><strong>A/D変換効率：</strong> アナログ信号をデジタル値へ変換する回路（ADC）の並列化。</li>
-            <li><strong>インターフェース規格：</strong> MIPI等の高速シリアルインターフェースによる帯域確保。</li>
-            <li><strong>圧縮符号化（ISP）：</strong> H.264/HEVC等による、視覚的情報量を維持した上でのデータ削減。</li>
-        </ol>
-    </section>
-
-    <section>
-        <div class="tag">産業的インパクト</div>
-        <h2>熱力学的制約と「熱の天井」の克服</h2>
-        <p>技術進歩における最大の障壁は、データの移動に伴う「熱」である。高ビットレート化は指数関数的な電子移動を促し、ジュール熱の発生を不可避にする。これは単なる発熱の問題に留まらず、センサーの「暗電流」を増大させ、画質を決定的に損なう要因となる。</p>
 
         <div class="grid">
             <div class="card">
-                <h3>S/N比の維持課題</h3>
-                <p>熱ノイズは「高画質・高ビット」のメリットを相殺する。熱力学的な制約下で性能を維持するため、低抵抗な銅配線の採用や、熱源の物理的分散が図られている。</p>
+                <h3>理論的ビットレートの算出</h3>
+                <p>センサーから出力されるRAWデータの潜在的なビットレートは、以下の物理要素の積によって定義される。これは後続のISP（画像処理エンジン）における処理負荷の基準となる。</p>
+                <div class="formula">
+                    $$Bitrate = Pixels \times Depth \times fps$$
+                </div>
             </div>
             <div class="card">
-                <h3>アクティブ冷却の必然性</h3>
-                <p>物理的な排熱空間が限定されるモバイル・小型機器において、ファン搭載等の強制冷却は、センサーの性能天井を押し上げるための必須要件となりつつある。</p>
+                <h3>インターフェースの帯域制御</h3>
+                <p>生成されたデータは、MIPI CSI-2等の高速シリアルインターフェースを介して転送される。バス帯域幅（MIPI速度）とコーデック効率の最適化が、最終的な記録ビットレートの安定性を左右する。</p>
             </div>
         </div>
+    </section>
+
+    <section>
+        <div class="tag">課題・物理的限界</div>
+        <h2>熱力学的制約：熱スロットリングのメカニズム</h2>
+        <p>データ転送量の増大は、回路内の電子移動に伴うジュール熱の発生を加速させる。シリコン温度の上昇は「暗電流」による熱ノイズを誘発し、S/N比を著しく低下させるため、システムは性能を強制的に抑制する「熱スロットリング」の状態へと移行する。</p>
+        
+        <div class="img-container">
+            <img src="cen2.png" alt="冷却動作と熱スロットリングの比較" class="zoom-target">
+            <span class="img-caption">図2：温度上昇に伴う性能低下（状態A vs 状態B）の比較解析</span>
+        </div>
+
+        <div class="grid">
+            <div class="card">
+                <h3>状態A：最大性能の維持</h3>
+                <p>効率的な排熱環境下では、全バス帯域を利用した高画素・高ビット深度の維持が可能である。これにより、RAWセンサーデータの潜在能力を最大限に活用できる。</p>
+            </div>
+            <div class="card">
+                <h3>状態B：熱スロットリングの発現</h3>
+                <p>閾値を超える熱を感知した場合、制御ユニットは画素読み出しのクロップ（画素数削減）、ビット深度の低下、フレームレートの抑制を実行し、物理的な発熱量を低減させる。</p>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="tag">結論</div>
+        <h2>産業的インパクトと今後の展望</h2>
+        <p>イメージセンサーの進化は、もはや純粋な受光性能の向上だけでなく、発生した熱をいかに管理・排出するかという「熱設計」の領域へと移行している。銅配線の最適化やアクティブ冷却システムの導入は、物理限界である「熱の天井」を押し上げ、8K/120fpsといった次世代の映像体験を実現するための不可欠な技術要素となっている。</p>
     </section>
 
 </div>
@@ -280,7 +288,7 @@
             </div>
         </address>
         <a href="mailto:sales@chronix.co.jp" class="btn-contact" style="display: inline-block; background: #f97316; color: white; padding: 12px 30px; border-radius: 5px; text-decoration: none; margin-top: 20px;">
-            <i class="fas fa-envelope" style="margin-right: 10px;"></i>メールでお問い合わせ
+            メールでお問い合わせ
         </a>
         <p style="margin-top: 50px; font-size: 0.8rem; color: #64748b; letter-spacing: 0.05em;">
             © 2026 CHRONIX
@@ -289,24 +297,32 @@
 </footer>
 
 <script>
-    const images = document.querySelectorAll('img:not(.logo):not(.hero-logo)');
+    const images = document.querySelectorAll('.zoom-target');
     const overlay = document.getElementById('overlay');
 
     images.forEach(img => {
         img.addEventListener('click', () => {
             if (img.classList.contains('zoomed')) {
-                img.classList.remove('zoomed');
-                overlay.style.display = 'none';
+                closeZoom();
             } else {
                 img.classList.add('zoomed');
                 overlay.style.display = 'block';
+                document.body.style.overflow = 'hidden'; // 背景スクロール防止
             }
         });
     });
 
-    overlay.addEventListener('click', () => {
+    overlay.addEventListener('click', closeZoom);
+
+    function closeZoom() {
         images.forEach(img => img.classList.remove('zoomed'));
         overlay.style.display = 'none';
+        document.body.style.overflow = '';
+    }
+
+    // エスケープキーで閉じる
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeZoom();
     });
 </script>
 
