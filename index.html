@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CMOSイメージセンサにおける設計アーキテクチャと素材工学の相関</title>
+    <title>CMOSイメージセンサにおける設計アーキテクチャと素材工学の相関解析</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
@@ -25,6 +25,7 @@
             background-color: var(--bg);
             color: var(--text);
             line-height: 1.7;
+            overflow-x: hidden;
         }
 
         /* Navigation */
@@ -36,6 +37,7 @@
             z-index: 1000;
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
             display: flex;
+            justify-content: space-between;
             align-items: center;
         }
 
@@ -47,120 +49,153 @@
         .hero {
             background: var(--primary);
             color: #fff;
-            padding: 80px 5%;
+            padding: 100px 5%;
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1.2fr 0.8fr;
             align-items: center;
-            gap: 40px;
+            gap: 60px;
         }
 
         .hero-content h1 {
-            font-size: 2.5rem;
-            margin-bottom: 20px;
+            font-size: 2.8rem;
+            margin-bottom: 24px;
             line-height: 1.2;
+            font-weight: 700;
         }
 
         .hero-logo {
             height: 60px;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
         }
 
         /* Layout */
         .container {
-            max-width: 1100px;
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 60px 20px;
+            padding: 80px 20px;
         }
 
         section {
-            margin-bottom: 80px;
+            margin-bottom: 100px;
         }
 
         h2 {
-            font-size: 1.8rem;
-            border-left: 5px solid var(--accent);
-            padding-left: 15px;
-            margin-bottom: 30px;
+            font-size: 2rem;
+            border-left: 6px solid var(--accent);
+            padding-left: 20px;
+            margin-bottom: 40px;
             color: var(--primary);
         }
 
         h3 {
-            font-size: 1.3rem;
-            margin: 25px 0 15px;
+            font-size: 1.4rem;
+            margin: 30px 0 15px;
             color: var(--primary);
+            font-weight: 600;
         }
 
-        .grid-2 {
+        p {
+            margin-bottom: 20px;
+            color: #334155;
+        }
+
+        .grid-layout {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+            align-items: start;
         }
 
         .card {
             background: #fff;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            padding: 35px;
+            border-radius: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
         }
 
-        /* Image Specifications */
+        /* Image/Zoom Specifications */
+        .img-container {
+            background: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            margin: 20px 0;
+        }
+
         img {
             max-width: 100%;
             height: auto;
             border-radius: 4px;
             cursor: zoom-in;
-            transition: all 0.3s ease;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
             display: block;
-            margin: 20px 0;
         }
 
-        .zoom-overlay {
+        img:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        /* Zoom functionality styles */
+        .img-expanded {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(1.5);
+            z-index: 2001;
+            cursor: zoom-out !important;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+            max-width: 90vw;
+            max-height: 90vh;
+            object-fit: contain;
+        }
+
+        .overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(9, 26, 45, 0.9);
+            background: rgba(9, 26, 45, 0.85);
             display: none;
-            justify-content: center;
-            align-items: center;
             z-index: 2000;
-            cursor: zoom-out;
+            backdrop-filter: blur(5px);
         }
 
-        .zoomed-img {
-            max-width: 90%;
-            max-height: 90%;
-            transform: scale(1.1);
+        /* Technical Table */
+        .table-wrapper {
+            overflow-x: auto;
+            margin: 30px 0;
         }
 
-        /* Table */
         table {
             width: 100%;
             border-collapse: collapse;
-            margin: 20px 0;
             background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
         }
 
         th, td {
             border: 1px solid #e2e8f0;
-            padding: 12px;
+            padding: 16px;
             text-align: left;
         }
 
         th {
             background: #f1f5f9;
-            font-weight: bold;
+            color: var(--primary);
+            font-weight: 600;
         }
 
         /* Responsive */
-        @media (max-width: 768px) {
+        @media (max-width: 992px) {
             .hero {
                 grid-template-columns: 1fr;
                 text-align: center;
+                padding-top: 60px;
             }
             .hero-logo {
-                margin: 0 auto 20px;
+                margin: 0 auto 30px;
             }
         }
     </style>
@@ -168,85 +203,115 @@
 <body>
 
 <nav>
-    <a href="https://nakajimakan14550.github.io/home/">
-        <img src="logo.png" alt="Chronix Logo" class="logo">
-    </a>
+    <div class="nav-left">
+        <a href="https://nakajimakan14550.github.io/home/">
+            <img src="logo.png" alt="Chronix Logo" class="logo">
+        </a>
+    </div>
 </nav>
 
 <div class="hero">
     <div class="hero-content">
         <img src="logo.png" alt="Brand Logo" class="hero-logo">
-        <h1>次世代CMOSセンシングの物理的基盤</h1>
-        <p>「画素数」という単一指標を超え、積層アーキテクチャと素材純度が決定付ける真の信号品位（S/N比）を解析します。</p>
+        <h1>次世代イメージセンシングにおける<br>物理的限界の突破と設計バランス</h1>
+        <p>画素の微細化に伴うS/N比の劣化、データ帯域の飽和、持続的な熱課題。これらのトレードオフを「素材純度」と「積層アーキテクチャ」によって最適化する、センサ設計の物理的基盤を詳解します。</p>
     </div>
-    <div class="hero-visual">
-        <img src="cen4.png" alt="CMOSセンサーの仕組みと性能の3要素">
+    <div class="hero-image">
+        <div class="img-container">
+            <img src="cen3.png" alt="The Optimal Sensor Design Balance">
+        </div>
     </div>
 </div>
 
 <div class="container">
-    <section id="background">
-        <h2>1. 背景と物理的課題：ノイズと熱のトレードオフ</h2>
-        <p>イメージセンサ設計において、高画素化は1画素あたりの受光面積を減少させ、物理的なS/N比の劣化を招きます。また、高速読み出しの要求はデータ帯域幅を増大させ、チップ内部の熱発生を促進します。この「熱」は暗電流ノイズの原因となり、画質劣化の主要因となります。</p>
+    <section id="physics-limit">
+        <h2>1. 背景：イメージングにおける物理的トレードオフ</h2>
+        <p>現代のCMOSイメージセンサ設計は、3つの競合する物理的要素のバランス（設計の黄金律）の上に成り立っています。高解像度化は1画素あたりの受光量を減少させ、高速化は消費電力と熱雑音を増大させます。</p>
         
-        <div class="grid-2">
+        <div class="grid-layout">
             <div class="card">
-                <h3>ピクセルサイズと信号品質</h3>
-                <p>大型ピクセルは高いダイナミックレンジと低ノイズを実現しますが、解像度が犠牲になります。微細ピクセルはこの逆となります。</p>
-                <img src="cen3.png" alt="画素サイズとS/N比の相関">
+                <h3>信号品質とピクセルサイズ</h3>
+                <p>Large Pixels（大型画素）は高いダイナミックレンジと低雑音を実現しますが、解像度が犠牲になります。一方でSmall Pixels（微細画素）は高解像度を可能にする反面、S/N比の確保には高度な光電変換効率の向上が不可欠です。</p>
+                <div class="img-container">
+                    <img src="cen3.png" alt="Pixel & Signal Quality Analysis">
+                </div>
             </div>
             <div class="card">
-                <h3>熱スロットリングによる制限</h3>
-                <p>高負荷動作（高解像度×高FPS）は温度上昇を招き、システムの保護動作（スロットリング）によって読み出しビットレートが制限される物理的限界が存在します。</p>
+                <h3>データ帯域と熱管理</h3>
+                <p>「高画素×高ビット深度×高フレームレート」の同時実現は、膨大なデータトラフィックを生成します。これは単なる転送の問題に留まらず、センサ内部での熱発生（Thermal Dissipation）を加速させ、持続可能な駆動時間に物理的な制限を課します。</p>
             </div>
         </div>
-        <img src="cen2.png" alt="状態A：冷却動作 vs 状態B：熱スロットリング">
     </section>
 
-    <section id="solution">
-        <h2>2. 解決策：積層構造(BSI)と素材工学の統合</h2>
-        <p>これらの物理的限界を克服するために、最新のセンサは「構造」と「素材」の両面からアプローチしています。</p>
+    <section id="architecture">
+        <h2>2. 技術原理：積層構造と素材工学の統合最適化</h2>
+        <p>物理的限界を打破するため、最新のセンサ設計は「設計（構造）」「素材（結晶品質）」「バランス（画質）」の3本柱で構成されます。</p>
 
-        <h3>積層型裏面照射構造（Stacked BSI）</h3>
-        <p>受光を行うフォトダイオード層、高速読み出しを行う回路層、そして一時的にデータを保持するバッファRAMを垂直に積層。これにより、受光効率の最大化と、データ転送パスの最短化を同時に実現しています。</p>
-        <img src="cen.png" alt="積層型CMOSセンサーのアーキテクチャ詳細">
+        <div class="img-container">
+            <img src="cen4.png" alt="CMOSセンサーの仕組みと性能の3要素">
+        </div>
 
-        <h3>超高純度シリコンとポテンシャル制御</h3>
-        <p>シリコン結晶内の不純物を極限まで排除することで、光子から変換された電子のトラップ（消失）を防ぎます。また、精密なドーピング技術によりポテンシャル勾配を形成し、微細な画素からでも高速かつ完全に電荷を転送する仕組みを構築しています。</p>
+        <div class="grid-layout">
+            <div>
+                <h3>1. 設計（構造）：Stacked Architecture</h3>
+                <p>受光層（Pixel層）の下部にバッファRAMおよびロジック層を積層。これにより、発生した電荷を最短距離でAD変換・処理することが可能となり、読み出し速度とノイズ耐性を同時に向上させています。</p>
+                <div class="img-container">
+                    <img src="cen.png" alt="Stacked BSI Architecture Detailed Layout">
+                </div>
+            </div>
+            <div>
+                <h3>2. 素材（結晶）：シリコン純度とポテンシャル制御</h3>
+                <p>センサのポテンシャル（地力）を決定付けるのはシリコンウェハーの純度です。結晶欠陥を極限まで排除したエピタキシャル成長層に、精密な不純物ドーピングを施すことで、微細な画素内でも電子を取り残さない「ポテンシャルの勾配」を形成。電荷転送の完全性を担保しています。</p>
+            </div>
+        </div>
     </section>
 
-    <section id="impact">
-        <h2>3. 産業的インパクト：実用的性能の「黄金律」</h2>
-        <p>センサの性能は、画素数、ビット深度、フレームレートの3軸による「実用的性能ゾーン（スイートスポット）」の策定によって決まります。カタログ上の最大値ではなく、連続駆動時の安定性と信号の純度が、産業用・放送用機器としての信頼性を定義します。</p>
+    <section id="sustainability">
+        <h2>3. 運用：熱スロットリングと持続的駆動の検証</h2>
+        <p>理論上の最大スペック（Raw Specs）と実用的性能には解離があります。特に高負荷連続駆動時における「熱雑音」の抑制が、プロフェッショナル用途における真の性能指標となります。</p>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>設計パラメーター</th>
-                    <th>データ量への影響</th>
-                    <th>画質への寄与</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>画素数 (Pixel Count)</td>
-                    <td>比例増加</td>
-                    <td>空間解像度の向上</td>
-                </tr>
-                <tr>
-                    <td>ビット深度 (Bit Depth)</td>
-                    <td>比例増加</td>
-                    <td>階調表現・色域の拡大</td>
-                </tr>
-                <tr>
-                    <td>フレームレート (FPS)</td>
-                    <td>比例増加</td>
-                    <td>時間分解能・動体歪みの抑制</td>
-                </tr>
-            </tbody>
-        </table>
-
-        <p>結論として、真の高品質データ出力は、データ解像度、帯域幅、および熱管理（Operational Sustainability）の最適バランスの上に成り立っています。</p>
+        <div class="grid-layout">
+            <div class="card">
+                <h3>冷却動作（状態A）と熱スロットリング（状態B）</h3>
+                <p>センサ温度が上昇すると、システムは熱損傷を避けるためにフレームレートやビット深度を制限する「熱スロットリング」を発動させます。優れた設計とは、高い放熱効率によりこの発動閾値を押し上げ、高画質を維持したまま長時間の駆動を可能にするものです。</p>
+                <div class="img-container">
+                    <img src="cen2.png" alt="Thermal Throttling State Analysis">
+                </div>
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>解析項目</th>
+                            <th>状態A：冷却動作時</th>
+                            <th>状態B：熱飽和・制限時</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>ノイズフロア</td>
+                            <td>極低（理論限界に近い）</td>
+                            <td>増大（熱雑音による支配）</td>
+                        </tr>
+                        <tr>
+                            <td>ビット深度</td>
+                            <td>最大値（例：14-bit）</td>
+                            <td>制限（例：10-bit以下）</td>
+                        </tr>
+                        <tr>
+                            <td>転送レート</td>
+                            <td>全バスフル稼働（120fps）</td>
+                            <td>レート間引き（24fps以下）</td>
+                        </tr>
+                        <tr>
+                            <td>電力効率</td>
+                            <td>最適化状態</td>
+                            <td>低下（リーク電流の増大）</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </section>
 </div>
 
@@ -260,38 +325,4 @@
                 <p><strong>FAX</strong> 03-5322-7790</p>
             </div>
         </address>
-        <a href="mailto:sales@chronix.co.jp" class="btn-contact" style="display: inline-block; background: #f97316; color: white; padding: 12px 30px; border-radius: 5px; text-decoration: none; margin-top: 20px;">
-            <i class="fas fa-envelope" style="margin-right: 10px;"></i>メールでお問い合わせ
-        </a>
-        <p style="margin-top: 50px; font-size: 0.8rem; color: #64748b; letter-spacing: 0.05em;">
-            © 2026 CHRONIX
-        </p>
-    </div>
-</footer>
-
-<div class="zoom-overlay" id="zoomOverlay">
-    <img src="" alt="Zoomed view" class="zoomed-img" id="zoomedImg">
-</div>
-
-<script>
-    const images = document.querySelectorAll('img:not(.logo):not(.hero-logo)');
-    const overlay = document.getElementById('zoomOverlay');
-    const zoomedImg = document.getElementById('zoomedImg');
-
-    images.forEach(img => {
-        img.addEventListener('click', () => {
-            zoomedImg.src = img.src;
-            overlay.style.display = 'flex';
-            document.body.style.overflow = 'hidden';
-            zoomedImg.style.cursor = 'zoom-out';
-        });
-    });
-
-    overlay.addEventListener('click', () => {
-        overlay.style.display = 'none';
-        document.body.style.overflow = 'auto';
-    });
-</script>
-
-</body>
-</html>
+        <a href="mailto:sales@chronix.co.jp" class="btn-contact
