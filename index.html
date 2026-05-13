@@ -3,39 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CMOSイメージセンサーの転送理論と熱力学的限界 | クロニクス株式会社</title>
+    <title>CMOSイメージセンサにおける設計アーキテクチャと素材工学の相関</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
-            --main-color: #091a2d;
-            --accent-color: #f97316;
-            --bg-color: #f8fafc;
-            --text-color: #1e293b;
-            --border-color: #e2e8f0;
+            --primary: #091a2d;
+            --accent: #f97316;
+            --bg: #f8fafc;
+            --text: #1e293b;
+            --light-text: #64748b;
         }
 
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
         }
 
         body {
-            font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
             line-height: 1.7;
         }
 
         /* Navigation */
         nav {
             background: #fff;
-            padding: 15px 40px;
-            display: flex;
-            align-items: center;
+            padding: 15px 5%;
             position: sticky;
             top: 0;
             z-index: 1000;
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
         }
 
         nav .logo {
@@ -44,33 +45,27 @@
 
         /* Hero Section */
         .hero {
-            background: var(--main-color);
+            background: var(--primary);
             color: #fff;
-            padding: 80px 20px;
-            text-align: center;
+            padding: 80px 5%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            align-items: center;
+            gap: 40px;
         }
 
-        .hero-content {
-            max-width: 1000px;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
+        .hero-content h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            line-height: 1.2;
         }
 
         .hero-logo {
             height: 60px;
+            margin-bottom: 20px;
         }
 
-        .hero h1 {
-            font-size: 2.2rem;
-            letter-spacing: 0.05em;
-            font-weight: 700;
-            line-height: 1.4;
-        }
-
-        /* Main Content */
+        /* Layout */
         .container {
             max-width: 1100px;
             margin: 0 auto;
@@ -79,203 +74,181 @@
 
         section {
             margin-bottom: 80px;
-            padding-bottom: 40px;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        section:last-child {
-            border-bottom: none;
         }
 
         h2 {
             font-size: 1.8rem;
-            color: var(--main-color);
+            border-left: 5px solid var(--accent);
+            padding-left: 15px;
             margin-bottom: 30px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        h2::before {
-            content: "";
-            display: inline-block;
-            width: 5px;
-            height: 30px;
-            background: var(--accent-color);
+            color: var(--primary);
         }
 
         h3 {
             font-size: 1.3rem;
             margin: 25px 0 15px;
-            color: var(--main-color);
+            color: var(--primary);
         }
 
-        /* Grid Layout */
-        .grid {
+        .grid-2 {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 30px;
-            margin-top: 30px;
         }
 
         .card {
             background: #fff;
-            padding: 25px;
+            padding: 30px;
             border-radius: 8px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
         }
 
-        /* Image Display & Zoom */
-        .img-container {
-            text-align: center;
-            margin: 40px 0;
-            background: #fff;
-            padding: 20px;
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-        }
-
+        /* Image Specifications */
         img {
             max-width: 100%;
             height: auto;
-            cursor: zoom-in;
-            transition: transform 0.3s ease;
             border-radius: 4px;
-        }
-
-        .img-caption {
+            cursor: zoom-in;
+            transition: all 0.3s ease;
             display: block;
-            margin-top: 15px;
-            font-size: 0.9rem;
-            color: #64748b;
-            font-weight: bold;
+            margin: 20px 0;
         }
 
-        /* Zoom Implementation */
-        .zoomed {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(1.2);
-            z-index: 2000;
-            cursor: zoom-out;
-            max-width: 90vw;
-            max-height: 90vh;
-            object-fit: contain;
-            box-shadow: 0 0 100px rgba(0,0,0,0.5);
-        }
-
-        .overlay {
+        .zoom-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             background: rgba(9, 26, 45, 0.9);
-            z-index: 1500;
             display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            cursor: zoom-out;
         }
 
-        .formula {
-            background: #f1f5f9;
-            padding: 20px;
-            border-left: 4px solid var(--main-color);
+        .zoomed-img {
+            max-width: 90%;
+            max-height: 90%;
+            transform: scale(1.1);
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
             margin: 20px 0;
-            font-size: 1.1rem;
+            background: #fff;
         }
 
-        .tag {
-            display: inline-block;
-            background: var(--accent-color);
-            color: #fff;
-            padding: 2px 12px;
-            font-size: 0.8rem;
-            border-radius: 4px;
-            margin-bottom: 10px;
+        th, td {
+            border: 1px solid #e2e8f0;
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background: #f1f5f9;
             font-weight: bold;
         }
 
+        /* Responsive */
         @media (max-width: 768px) {
-            .hero h1 { font-size: 1.5rem; }
-            .grid { grid-template-columns: 1fr; }
-            .zoomed { transform: translate(-50%, -50%) scale(1.0); width: 95vw; }
+            .hero {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            .hero-logo {
+                margin: 0 auto 20px;
+            }
         }
     </style>
-    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
 
 <nav>
     <a href="https://nakajimakan14550.github.io/home/">
-        <img src="logo.png" alt="Chronix Logo" class="logo" onerror="this.src='https://via.placeholder.com/150x40?text=CHRONIX'">
+        <img src="logo.png" alt="Chronix Logo" class="logo">
     </a>
 </nav>
 
-<header class="hero">
+<div class="hero">
     <div class="hero-content">
-        <img src="logo.png" alt="Chronix Logo" class="hero-logo" onerror="this.style.display='none'">
-        <h1>次世代CMOSイメージセンサーにおける<br>データ生成理論と物理的制約の解析</h1>
+        <img src="logo.png" alt="Brand Logo" class="hero-logo">
+        <h1>次世代CMOSセンシングの物理的基盤</h1>
+        <p>「画素数」という単一指標を超え、積層アーキテクチャと素材純度が決定付ける真の信号品位（S/N比）を解析します。</p>
     </div>
-</header>
-
-<div class="container">
-    
-    <section>
-        <div class="tag">背景・技術原理</div>
-        <h2>イメージセンサーのアーキテクチャとデータポテンシャル</h2>
-        <p>CMOSセンサーにおけるデータ生成量は、物理的な画素構造と読み出し回路の並列処理能力に依存する。特に積層型BSI（裏面照射型）構造は、受光部とロジック回路を分離・積層することで、最短距離での高速信号伝送を可能にしている。</p>
-        
-        <div class="img-container">
-            <img src="cen.png" alt="CMOSセンサーのデータ転送フロー" class="zoom-target">
-            <span class="img-caption">図1：センサーアーキテクチャとRAWデータ生成のプロセスフロー</span>
-        </div>
-
-        <div class="grid">
-            <div class="card">
-                <h3>理論的ビットレートの算出</h3>
-                <p>センサーから出力されるRAWデータの潜在的なビットレートは、以下の物理要素の積によって定義される。これは後続のISP（画像処理エンジン）における処理負荷の基準となる。</p>
-                <div class="formula">
-                    $$Bitrate = Pixels \times Depth \times fps$$
-                </div>
-            </div>
-            <div class="card">
-                <h3>インターフェースの帯域制御</h3>
-                <p>生成されたデータは、MIPI CSI-2等の高速シリアルインターフェースを介して転送される。バス帯域幅（MIPI速度）とコーデック効率の最適化が、最終的な記録ビットレートの安定性を左右する。</p>
-            </div>
-        </div>
-    </section>
-
-    <section>
-        <div class="tag">課題・物理的限界</div>
-        <h2>熱力学的制約：熱スロットリングのメカニズム</h2>
-        <p>データ転送量の増大は、回路内の電子移動に伴うジュール熱の発生を加速させる。シリコン温度の上昇は「暗電流」による熱ノイズを誘発し、S/N比を著しく低下させるため、システムは性能を強制的に抑制する「熱スロットリング」の状態へと移行する。</p>
-        
-        <div class="img-container">
-            <img src="cen2.png" alt="冷却動作と熱スロットリングの比較" class="zoom-target">
-            <span class="img-caption">図2：温度上昇に伴う性能低下（状態A vs 状態B）の比較解析</span>
-        </div>
-
-        <div class="grid">
-            <div class="card">
-                <h3>状態A：最大性能の維持</h3>
-                <p>効率的な排熱環境下では、全バス帯域を利用した高画素・高ビット深度の維持が可能である。これにより、RAWセンサーデータの潜在能力を最大限に活用できる。</p>
-            </div>
-            <div class="card">
-                <h3>状態B：熱スロットリングの発現</h3>
-                <p>閾値を超える熱を感知した場合、制御ユニットは画素読み出しのクロップ（画素数削減）、ビット深度の低下、フレームレートの抑制を実行し、物理的な発熱量を低減させる。</p>
-            </div>
-        </div>
-    </section>
-
-    <section>
-        <div class="tag">結論</div>
-        <h2>産業的インパクトと今後の展望</h2>
-        <p>イメージセンサーの進化は、もはや純粋な受光性能の向上だけでなく、発生した熱をいかに管理・排出するかという「熱設計」の領域へと移行している。銅配線の最適化やアクティブ冷却システムの導入は、物理限界である「熱の天井」を押し上げ、8K/120fpsといった次世代の映像体験を実現するための不可欠な技術要素となっている。</p>
-    </section>
-
+    <div class="hero-visual">
+        <img src="cen4.png" alt="CMOSセンサーの仕組みと性能の3要素">
+    </div>
 </div>
 
-<div class="overlay" id="overlay"></div>
+<div class="container">
+    <section id="background">
+        <h2>1. 背景と物理的課題：ノイズと熱のトレードオフ</h2>
+        <p>イメージセンサ設計において、高画素化は1画素あたりの受光面積を減少させ、物理的なS/N比の劣化を招きます。また、高速読み出しの要求はデータ帯域幅を増大させ、チップ内部の熱発生を促進します。この「熱」は暗電流ノイズの原因となり、画質劣化の主要因となります。</p>
+        
+        <div class="grid-2">
+            <div class="card">
+                <h3>ピクセルサイズと信号品質</h3>
+                <p>大型ピクセルは高いダイナミックレンジと低ノイズを実現しますが、解像度が犠牲になります。微細ピクセルはこの逆となります。</p>
+                <img src="cen3.png" alt="画素サイズとS/N比の相関">
+            </div>
+            <div class="card">
+                <h3>熱スロットリングによる制限</h3>
+                <p>高負荷動作（高解像度×高FPS）は温度上昇を招き、システムの保護動作（スロットリング）によって読み出しビットレートが制限される物理的限界が存在します。</p>
+            </div>
+        </div>
+        <img src="cen2.png" alt="状態A：冷却動作 vs 状態B：熱スロットリング">
+    </section>
+
+    <section id="solution">
+        <h2>2. 解決策：積層構造(BSI)と素材工学の統合</h2>
+        <p>これらの物理的限界を克服するために、最新のセンサは「構造」と「素材」の両面からアプローチしています。</p>
+
+        <h3>積層型裏面照射構造（Stacked BSI）</h3>
+        <p>受光を行うフォトダイオード層、高速読み出しを行う回路層、そして一時的にデータを保持するバッファRAMを垂直に積層。これにより、受光効率の最大化と、データ転送パスの最短化を同時に実現しています。</p>
+        <img src="cen.png" alt="積層型CMOSセンサーのアーキテクチャ詳細">
+
+        <h3>超高純度シリコンとポテンシャル制御</h3>
+        <p>シリコン結晶内の不純物を極限まで排除することで、光子から変換された電子のトラップ（消失）を防ぎます。また、精密なドーピング技術によりポテンシャル勾配を形成し、微細な画素からでも高速かつ完全に電荷を転送する仕組みを構築しています。</p>
+    </section>
+
+    <section id="impact">
+        <h2>3. 産業的インパクト：実用的性能の「黄金律」</h2>
+        <p>センサの性能は、画素数、ビット深度、フレームレートの3軸による「実用的性能ゾーン（スイートスポット）」の策定によって決まります。カタログ上の最大値ではなく、連続駆動時の安定性と信号の純度が、産業用・放送用機器としての信頼性を定義します。</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>設計パラメーター</th>
+                    <th>データ量への影響</th>
+                    <th>画質への寄与</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>画素数 (Pixel Count)</td>
+                    <td>比例増加</td>
+                    <td>空間解像度の向上</td>
+                </tr>
+                <tr>
+                    <td>ビット深度 (Bit Depth)</td>
+                    <td>比例増加</td>
+                    <td>階調表現・色域の拡大</td>
+                </tr>
+                <tr>
+                    <td>フレームレート (FPS)</td>
+                    <td>比例増加</td>
+                    <td>時間分解能・動体歪みの抑制</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p>結論として、真の高品質データ出力は、データ解像度、帯域幅、および熱管理（Operational Sustainability）の最適バランスの上に成り立っています。</p>
+    </section>
+</div>
 
 <footer style="background: #091a2d; color: #fff; padding: 60px 20px; text-align: center;">
     <div class="footer-info">
@@ -288,7 +261,7 @@
             </div>
         </address>
         <a href="mailto:sales@chronix.co.jp" class="btn-contact" style="display: inline-block; background: #f97316; color: white; padding: 12px 30px; border-radius: 5px; text-decoration: none; margin-top: 20px;">
-            メールでお問い合わせ
+            <i class="fas fa-envelope" style="margin-right: 10px;"></i>メールでお問い合わせ
         </a>
         <p style="margin-top: 50px; font-size: 0.8rem; color: #64748b; letter-spacing: 0.05em;">
             © 2026 CHRONIX
@@ -296,33 +269,27 @@
     </div>
 </footer>
 
+<div class="zoom-overlay" id="zoomOverlay">
+    <img src="" alt="Zoomed view" class="zoomed-img" id="zoomedImg">
+</div>
+
 <script>
-    const images = document.querySelectorAll('.zoom-target');
-    const overlay = document.getElementById('overlay');
+    const images = document.querySelectorAll('img:not(.logo):not(.hero-logo)');
+    const overlay = document.getElementById('zoomOverlay');
+    const zoomedImg = document.getElementById('zoomedImg');
 
     images.forEach(img => {
         img.addEventListener('click', () => {
-            if (img.classList.contains('zoomed')) {
-                closeZoom();
-            } else {
-                img.classList.add('zoomed');
-                overlay.style.display = 'block';
-                document.body.style.overflow = 'hidden'; // 背景スクロール防止
-            }
+            zoomedImg.src = img.src;
+            overlay.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+            zoomedImg.style.cursor = 'zoom-out';
         });
     });
 
-    overlay.addEventListener('click', closeZoom);
-
-    function closeZoom() {
-        images.forEach(img => img.classList.remove('zoomed'));
+    overlay.addEventListener('click', () => {
         overlay.style.display = 'none';
-        document.body.style.overflow = '';
-    }
-
-    // エスケープキーで閉じる
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') closeZoom();
+        document.body.style.overflow = 'auto';
     });
 </script>
 
