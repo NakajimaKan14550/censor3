@@ -12,6 +12,7 @@
             --bg: #f8fafc;
             --text: #1e293b;
             --light-text: #64748b;
+            --border: #e2e8f0;
         }
 
         * {
@@ -24,7 +25,7 @@
             font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
             background-color: var(--bg);
             color: var(--text);
-            line-height: 1.7;
+            line-height: 1.8;
             overflow-x: hidden;
         }
 
@@ -35,115 +36,128 @@
             position: sticky;
             top: 0;
             z-index: 1000;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
             display: flex;
-            justify-content: space-between;
             align-items: center;
         }
 
         nav .logo {
-            height: 40px;
+            height: 35px;
+            transition: opacity 0.3s;
         }
 
-        /* Hero Section */
+        nav .logo:hover {
+            opacity: 0.8;
+        }
+
+        /* Hero Section (No Image) */
         .hero {
             background: var(--primary);
             color: #fff;
-            padding: 100px 5%;
-            display: grid;
-            grid-template-columns: 1.2fr 0.8fr;
-            align-items: center;
-            gap: 60px;
+            padding: 120px 5% 80px;
+            text-align: center;
         }
 
-        .hero-content h1 {
-            font-size: 2.8rem;
-            margin-bottom: 24px;
-            line-height: 1.2;
-            font-weight: 700;
+        .hero-content {
+            max-width: 900px;
+            margin: 0 auto;
         }
 
         .hero-logo {
-            height: 60px;
+            height: 50px;
+            margin-bottom: 40px;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
             margin-bottom: 30px;
+            line-height: 1.3;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            color: #cbd5e1;
+            max-width: 700px;
+            margin: 0 auto;
         }
 
         /* Layout */
         .container {
-            max-width: 1200px;
+            max-width: 1100px;
             margin: 0 auto;
-            padding: 80px 20px;
+            padding: 60px 20px;
         }
 
         section {
-            margin-bottom: 100px;
+            margin-bottom: 120px;
         }
 
         h2 {
-            font-size: 2rem;
-            border-left: 6px solid var(--accent);
+            font-size: 1.8rem;
+            border-left: 5px solid var(--accent);
             padding-left: 20px;
-            margin-bottom: 40px;
+            margin-bottom: 45px;
             color: var(--primary);
+            display: flex;
+            align-items: center;
         }
 
         h3 {
-            font-size: 1.4rem;
-            margin: 30px 0 15px;
+            font-size: 1.25rem;
+            margin: 25px 0 15px;
             color: var(--primary);
-            font-weight: 600;
+            font-weight: 700;
         }
 
         p {
             margin-bottom: 20px;
-            color: #334155;
+            color: #475569;
+            text-align: justify;
         }
 
         .grid-layout {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 40px;
-            align-items: start;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
         }
 
         .card {
             background: #fff;
-            padding: 35px;
+            padding: 40px;
             border-radius: 12px;
-            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
+            border: 1px solid var(--border);
         }
 
         /* Image/Zoom Specifications */
-        .img-container {
+        .img-wrapper {
+            margin: 25px 0;
             background: #fff;
-            padding: 15px;
             border-radius: 8px;
-            border: 1px solid #e2e8f0;
-            margin: 20px 0;
+            overflow: hidden;
+            border: 1px solid var(--border);
         }
 
         img {
             max-width: 100%;
             height: auto;
-            border-radius: 4px;
             cursor: zoom-in;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: all 0.3s ease;
             display: block;
         }
 
-        img:hover {
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
-
-        /* Zoom functionality styles */
-        .img-expanded {
+        /* Zoom state */
+        .img-zoom {
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%) scale(1.5);
-            z-index: 2001;
-            cursor: zoom-out !important;
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+            z-index: 2100;
+            cursor: zoom-out;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.6);
             max-width: 90vw;
             max-height: 90vh;
             object-fit: contain;
@@ -155,30 +169,31 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(9, 26, 45, 0.85);
+            background: rgba(9, 26, 45, 0.9);
             display: none;
             z-index: 2000;
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(8px);
         }
 
         /* Technical Table */
         .table-wrapper {
-            overflow-x: auto;
-            margin: 30px 0;
+            margin-top: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border);
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
             background: #fff;
-            border-radius: 8px;
-            overflow: hidden;
+            font-size: 0.95rem;
         }
 
         th, td {
-            border: 1px solid #e2e8f0;
-            padding: 16px;
+            padding: 18px;
             text-align: left;
+            border-bottom: 1px solid var(--border);
         }
 
         th {
@@ -187,27 +202,38 @@
             font-weight: 600;
         }
 
-        /* Responsive */
-        @media (max-width: 992px) {
-            .hero {
-                grid-template-columns: 1fr;
-                text-align: center;
-                padding-top: 60px;
-            }
-            .hero-logo {
-                margin: 0 auto 30px;
-            }
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Footer */
+        footer {
+            background: #091a2d;
+            color: #fff;
+            padding: 80px 20px;
+            text-align: center;
+        }
+
+        .btn-contact:hover {
+            background: #ea580c !important;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 1.8rem; }
+            .hero { padding: 80px 5% 60px; }
+            .img-zoom { transform: translate(-50%, -50%) scale(1.0); width: 95vw; }
         }
     </style>
 </head>
 <body>
 
+<div class="overlay" id="overlay"></div>
+
 <nav>
-    <div class="nav-left">
-        <a href="https://nakajimakan14550.github.io/home/">
-            <img src="logo.png" alt="Chronix Logo" class="logo">
-        </a>
-    </div>
+    <a href="https://nakajimakan14550.github.io/home/">
+        <img src="logo.png" alt="Chronix Logo" class="logo">
+    </a>
 </nav>
 
 <div class="hero">
@@ -216,15 +242,10 @@
         <h1>次世代イメージセンシングにおける<br>物理的限界の突破と設計バランス</h1>
         <p>画素の微細化に伴うS/N比の劣化、データ帯域の飽和、持続的な熱課題。これらのトレードオフを「素材純度」と「積層アーキテクチャ」によって最適化する、センサ設計の物理的基盤を詳解します。</p>
     </div>
-    <div class="hero-image">
-        <div class="img-container">
-            <img src="cen3.png" alt="The Optimal Sensor Design Balance">
-        </div>
-    </div>
 </div>
 
 <div class="container">
-    <section id="physics-limit">
+    <section>
         <h2>1. 背景：イメージングにおける物理的トレードオフ</h2>
         <p>現代のCMOSイメージセンサ設計は、3つの競合する物理的要素のバランス（設計の黄金律）の上に成り立っています。高解像度化は1画素あたりの受光量を減少させ、高速化は消費電力と熱雑音を増大させます。</p>
         
@@ -232,7 +253,7 @@
             <div class="card">
                 <h3>信号品質とピクセルサイズ</h3>
                 <p>Large Pixels（大型画素）は高いダイナミックレンジと低雑音を実現しますが、解像度が犠牲になります。一方でSmall Pixels（微細画素）は高解像度を可能にする反面、S/N比の確保には高度な光電変換効率の向上が不可欠です。</p>
-                <div class="img-container">
+                <div class="img-wrapper">
                     <img src="cen3.png" alt="Pixel & Signal Quality Analysis">
                 </div>
             </div>
@@ -243,41 +264,41 @@
         </div>
     </section>
 
-    <section id="architecture">
+    <section>
         <h2>2. 技術原理：積層構造と素材工学の統合最適化</h2>
         <p>物理的限界を打破するため、最新のセンサ設計は「設計（構造）」「素材（結晶品質）」「バランス（画質）」の3本柱で構成されます。</p>
 
-        <div class="img-container">
+        <div class="img-wrapper">
             <img src="cen4.png" alt="CMOSセンサーの仕組みと性能の3要素">
         </div>
 
         <div class="grid-layout">
             <div>
-                <h3>1. 設計（構造）：Stacked Architecture</h3>
+                <h3>設計（構造）：Stacked Architecture</h3>
                 <p>受光層（Pixel層）の下部にバッファRAMおよびロジック層を積層。これにより、発生した電荷を最短距離でAD変換・処理することが可能となり、読み出し速度とノイズ耐性を同時に向上させています。</p>
-                <div class="img-container">
+                <div class="img-wrapper">
                     <img src="cen.png" alt="Stacked BSI Architecture Detailed Layout">
                 </div>
             </div>
             <div>
-                <h3>2. 素材（結晶）：シリコン純度とポテンシャル制御</h3>
-                <p>センサのポテンシャル（地力）を決定付けるのはシリコンウェハーの純度です。結晶欠陥を極限まで排除したエピタキシャル成長層に、精密な不純物ドーピングを施すことで、微細な画素内でも電子を取り残さない「ポテンシャルの勾配」を形成。電荷転送の完全性を担保しています。</p>
+                <h3>素材（結晶）：シリコン純度とポテンシャル制御</h3>
+                <p>センサのポテンシャルを決定付けるのはシリコンウェハーの純度です。結晶欠陥を極限まで排除したエピタキシャル成長層に精密な不純物ドーピングを施すことで、微細な画素内でも電子を取り残さない「ポテンシャルの勾配」を形成し、電荷転送の完全性を担保しています。</p>
             </div>
         </div>
     </section>
 
-    <section id="sustainability">
+    <section>
         <h2>3. 運用：熱スロットリングと持続的駆動の検証</h2>
-        <p>理論上の最大スペック（Raw Specs）と実用的性能には解離があります。特に高負荷連続駆動時における「熱雑音」の抑制が、プロフェッショナル用途における真の性能指標となります。</p>
+        <p>理論上の最大スペックと実用的性能には解離があります。特に高負荷連続駆動時における「熱雑音」の抑制が、プロフェッショナル用途における真の性能指標となります。</p>
 
-        <div class="grid-layout">
-            <div class="card">
-                <h3>冷却動作（状態A）と熱スロットリング（状態B）</h3>
-                <p>センサ温度が上昇すると、システムは熱損傷を避けるためにフレームレートやビット深度を制限する「熱スロットリング」を発動させます。優れた設計とは、高い放熱効率によりこの発動閾値を押し上げ、高画質を維持したまま長時間の駆動を可能にするものです。</p>
-                <div class="img-container">
-                    <img src="cen2.png" alt="Thermal Throttling State Analysis">
-                </div>
+        <div class="card">
+            <h3>冷却動作（状態A）と熱スロットリング（状態B）の比較解析</h3>
+            <p>センサ温度の上昇に伴い、システムは熱損傷を回避するため、フレームレートやビット深度を制限する「熱スロットリング」を発動させます。放熱効率の最適化はこの閾値を押し上げます。</p>
+            
+            <div class="img-wrapper" style="max-width: 600px; margin: 30px auto;">
+                <img src="cen2.png" alt="Thermal Throttling State Analysis">
             </div>
+
             <div class="table-wrapper">
                 <table>
                     <thead>
@@ -295,18 +316,13 @@
                         </tr>
                         <tr>
                             <td>ビット深度</td>
-                            <td>最大値（例：14-bit）</td>
-                            <td>制限（例：10-bit以下）</td>
+                            <td>最大値（14-bit等）</td>
+                            <td>制限（10-bit以下）</td>
                         </tr>
                         <tr>
                             <td>転送レート</td>
-                            <td>全バスフル稼働（120fps）</td>
-                            <td>レート間引き（24fps以下）</td>
-                        </tr>
-                        <tr>
-                            <td>電力効率</td>
-                            <td>最適化状態</td>
-                            <td>低下（リーク電流の増大）</td>
+                            <td>120fps（フル稼働）</td>
+                            <td>24fps以下（制限）</td>
                         </tr>
                     </tbody>
                 </table>
@@ -315,7 +331,7 @@
     </section>
 </div>
 
-<footer style="background: #091a2d; color: #fff; padding: 60px 20px; text-align: center;">
+<footer>
     <div class="footer-info">
         <p class="company-name" style="font-size: 1.5rem; font-weight: bold; margin-bottom: 20px;">クロニクス株式会社</p>
         <address class="footer-address" style="font-style: normal; line-height: 1.8; color: #cbd5e1;">
@@ -325,4 +341,49 @@
                 <p><strong>FAX</strong> 03-5322-7790</p>
             </div>
         </address>
-        <a href="mailto:sales@chronix.co.jp" class="btn-contact
+        <a href="mailto:sales@chronix.co.jp" class="btn-contact" style="display: inline-block; background: #f97316; color: white; padding: 12px 35px; border-radius: 5px; text-decoration: none; margin-top: 20px; transition: all 0.3s ease; font-weight: 600;">
+            <i class="fas fa-envelope" style="margin-right: 10px;"></i>メールでお問い合わせ
+        </a>
+        <p style="margin-top: 50px; font-size: 0.8rem; color: #64748b; letter-spacing: 0.1em;">
+            © 2026 CHRONIX
+        </p>
+    </div>
+</footer>
+
+<script>
+    const images = document.querySelectorAll('img:not(.logo):not(.hero-logo)');
+    const overlay = document.getElementById('overlay');
+
+    images.forEach(img => {
+        img.addEventListener('click', () => {
+            if (!img.classList.contains('img-zoom')) {
+                // Zoom In
+                img.classList.add('img-zoom');
+                overlay.style.display = 'block';
+                document.body.style.overflow = 'hidden';
+            } else {
+                // Zoom Out
+                closeZoom();
+            }
+        });
+    });
+
+    overlay.addEventListener('click', closeZoom);
+
+    function closeZoom() {
+        const zoomedImg = document.querySelector('.img-zoom');
+        if (zoomedImg) {
+            zoomedImg.classList.remove('img-zoom');
+        }
+        overlay.style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+
+    // ESC key to close
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeZoom();
+    });
+</script>
+
+</body>
+</html>
